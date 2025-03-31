@@ -72,3 +72,29 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 # gesture-controlled-by-player
 # gesture-controlled-by-player
 # gesture-controlled-by-player
+
+# Gesture-Controlled Media Player
+
+## Description
+A modern media player application that allows users to control video playback using hand gestures captured through a webcam. This project leverages MediaPipe for hand tracking and gesture recognition to create an intuitive, hands-free media control experience.
+
+Key features include:
+- Play/pause videos using hand gestures (Open Palm/Closed Fist)
+- Control volume with thumb up/down gestures
+- Navigate between videos with swipe gestures or Victory sign
+- Real-time hand tracking and gesture recognition
+- Visual feedback with FPS counter and gesture detection display
+
+## Installation Instructions
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+- Webcam access
+- Modern browser with WebRTC support
+
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/sy17258/-Gesture-controlled-media-player.git
+   ```
