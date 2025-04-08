@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 
 function VideoPlayer({ video, isPlaying, volume }) {
@@ -69,9 +70,11 @@ function VideoPlayer({ video, isPlaying, volume }) {
   return (
     <div className="video-player">
       <video
+        x-webkit-airplay="allow"
+        type="video/mp4"
         ref={videoRef}
         controls={true}
-        style={{ width: '100%', height: 'auto' }}
+        style={{ width: '100%', height: 'auto', boxShadow: '0 0 15px #00f2fe', borderRadius: '20px'}}
       >
         Your browser does not support the video tag.
       </video>

@@ -10,7 +10,8 @@ function CombinedDetector({
   decreaseVolume,
   previousTrack,
   nextTrack,
-  cameraActive = false
+  cameraActive = false,
+  isPlaying = false  // Add isPlaying prop with default value
 }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -187,12 +188,18 @@ function CombinedDetector({
                 switch (gestureName) {
                   case 'Closed_Fist':
                   case 'Closed_Hand': // Alternative name
-                    togglePlay();
+                    // Pause the video
+                    if (isPlaying) {
+                      togglePlay();
+                    }
                     handPositionRef.current.lastGestureTime = currentTime;
                     break;
                   case 'Open_Palm':
                   case 'Open_Hand': // Alternative name
-                    togglePlay();
+                    // Play the video
+                    if (!isPlaying) {
+                      togglePlay();
+                    }
                     handPositionRef.current.lastGestureTime = currentTime;
                     break;
                   case 'Thumb_Up':
@@ -288,7 +295,7 @@ function CombinedDetector({
       // Continue the animation loop even when errors occur
       requestAnimationFrame(processFrame);
     }
-  }, [handLandmarker, gestureRecognizer, togglePlay, increaseVolume, decreaseVolume, nextTrack, previousTrack, debounceTime, cameraActive, fps, lastGesture, handLandmarks]);
+  }, [handLandmarker, gestureRecognizer, togglePlay, increaseVolume, decreaseVolume, nextTrack, previousTrack, debounceTime, cameraActive, fps, lastGesture, handLandmarks, isPlaying]);
   
   // In the camera handling useEffect
   useEffect(() => {
@@ -428,40 +435,38 @@ function CombinedDetector({
   }, [maxHands, detectionConfidence, trackingConfidence]);
   
   return (
-    <div className="combined-detector">
-      <h3>Combined Hand Detection & Gesture Control</h3>
+    <div className="combined-detector" >
+      <h3>Hand Detection & Gesture Control</h3>
       {error && <div className="error-message">{error}</div>}
-      <div style={{ position: 'relative', width: '320px', height: '240px' }}>
-        <video 
-          ref={videoRef} 
-          style={{ 
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            opacity: 0.2, // Increased from 0.1 for better visibility
-            display: 'none' // Hide the video element to prevent double rendering
-          }}
-          width="320" 
-          height="240"
-          playsInline
-          muted
-          autoPlay
-        />
-        <canvas 
-          ref={canvasRef} 
-          width="320" 
-          height="240"
-          style={{ 
-            border: '1px solid #ccc',
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)' // Add background color to canvas
-          }}
-        />
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
+        <div style={{ position: 'relative', width: '420px', height: '240px' }}>
+          {/* Add the video element that was missing */}
+          <video
+            ref={videoRef}
+            style={{ 
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: 0, // Hide video but keep it in DOM for processing
+            }}
+            playsInline
+            muted
+          />
+          <canvas 
+            ref={canvasRef} 
+            width="420" 
+            height="240"
+            style={{ 
+              border: '1px solid #ccc',
+              width: '100%',
+              height: '100%',
+              borderRadius: '20px',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)'
+            }}
+          />
+        </div>
+       
       </div>
       
       {/* Status indicator */}
@@ -471,20 +476,8 @@ function CombinedDetector({
         <p>Last Gesture: {lastGesture}</p>
       </div>
       
-      <div className="gesture-guide">
-        <h4>Gesture Controls:</h4>
-        <ul>
-          <li><span className="emoji">👊</span> <strong>Closed Fist</strong> - Play/Pause</li>
-          <li><span className="emoji">🖐️</span> <strong>Open Hand</strong> - Play/Pause</li>
-          <li><span className="emoji">👍</span> <strong>Thumb Up</strong> - Increase Volume</li>
-          <li><span className="emoji">👎</span> <strong>Thumb Down</strong> - Decrease Volume</li>
-          <li><span className="emoji">✌️</span> <strong>Victory/Peace</strong> - Next Track</li>
-          <li><span className="emoji">🤟</span> <strong>I Love You</strong> - Previous Track</li>
-          <li><span className="emoji">👈</span> <strong>Swipe Right</strong> - Previous Track</li>
-          <li><span className="emoji">👉</span> <strong>Swipe Left</strong> - Next Track</li>
-        </ul>
-      </div>
-      <div className="detection-status">
+      
+      <div className="detection-status" style={{ borderLeft: 'none' }}>
         <h4>Detection Status:</h4>
         {handLandmarks.length > 0 ? (
           <p className="status-active">✅ Hand detected with {handLandmarks[0].length} landmarks</p>
@@ -493,6 +486,18 @@ function CombinedDetector({
         )}
         <p>FPS: {fps}</p>
       </div>
+      <div className="gesture-guide" style={{ marginLeft: '20px', minWidth: '250px' }}>
+          <h4>Gesture Controls:</h4>
+          <ul>
+            <li><span className="emoji">👊</span> <strong>Closed Fist</strong> - Pause</li>
+            <li><span className="emoji">🖐️</span> <strong>Open Hand</strong> - Play</li>
+            <li><span className="emoji">👍</span> <strong>Thumb Up</strong> - Increase Volume</li>
+            <li><span className="emoji">👎</span> <strong>Thumb Down</strong> - Decrease Volume</li>
+            <li><span className="emoji">✌️</span> <strong>Victory</strong> - Victory</li>
+            <li><span className="emoji">👈</span> <strong>Swipe Right</strong> - Previous Track</li>
+            <li><span className="emoji">👉</span> <strong>Swipe Left</strong> - Next Track</li>
+          </ul>
+        </div>
     </div>
   );
 }

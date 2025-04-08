@@ -158,7 +158,7 @@ button:hover {
 
 /* Update combined detector for tech look */
 .combined-detector {
-  width: 100%;
+  width: fit-content;
   height: fit-content;
   background: var(--card-bg);
   border-radius: 12px;
@@ -170,7 +170,7 @@ button:hover {
 
 .combined-detector canvas {
   border: 1px solid rgba(0, 242, 254, 0.3) !important;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(0, 242, 254, 0.1) !important;
+  box-shadow: 0 0 20px rgba(227, 7, 7, 0.2), 0 0 10px rgba(0, 242, 254, 0.1) !important;
 }
 
 /* Update gesture guide for tech look */
@@ -214,11 +214,15 @@ button:hover {
   }
 }
 
-/* Update video player section */
-#video-player-section video {
-  border: 1px solid rgba(0, 242, 254, 0.3);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 15px rgba(0, 242, 254, 0.2);
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
+
 
 
 /* Add styles for camera control buttons */
@@ -278,4 +282,74 @@ button:hover {
   overflow: hidden;
   border: 1px solid rgba(0, 242, 254, 0.3);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(0, 242, 254, 0.2);
+}
+
+#front {
+  width: 100%;
+  
+  filter: drop-shadow(0 25px 25px rgba(0, 194, 247, 0.45)) saturate(1.5) contrast(1);
+}
+
+@keyframes glitch-anim {
+  0% { 
+    clip-path: inset(40% 0 61% 0);
+    transform: translate(-10px, 5px);
+  }
+  20% { 
+    clip-path: inset(92% 0 1% 0);
+    transform: translate(10px, -5px);
+  }
+  40% { 
+    clip-path: inset(43% 0 1% 0);
+    transform: translate(-10px, 5px);
+  }
+  60% { 
+    clip-path: inset(25% 0 58% 0);
+    transform: translate(10px, -5px);
+  }
+  80% { 
+    clip-path: inset(54% 0 7% 0);
+    transform: translate(-10px, 5px);
+  }
+  100% { 
+    clip-path: inset(58% 0 43% 0);
+    transform: translate(10px, -5px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.glitch-effect-intense {
+  position: relative;
+  overflow: hidden;
+}
+
+.glitch-effect-intense::before,
+.glitch-effect-intense::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('./assets/glogo.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+}
+
+.glitch-effect-intense::before {
+  left: 2px;
+  background-color: rgba(255, 0, 0, 0.4);
+  animation: glitch-anim 0.2s infinite linear alternate-reverse;
+}
+
+.glitch-effect-intense::after {
+  left: -2px;
+  background-color: rgba(0, 255, 255, 0.4);
+  animation: glitch-anim 0.3s infinite linear alternate;
 }
