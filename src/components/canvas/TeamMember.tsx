@@ -1,5 +1,5 @@
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -9,12 +9,50 @@ interface TeamMemberProps {
   name: string;
   role: string;
   color?: string;
+  imageSrc?: string;
 }
 
-const TeamMember = ({ position, name, role, color = '#8B5CF6' }: TeamMemberProps) => {
+const TeamMember = ({ position, name, role, color = '#8B5CF6', imageSrc }: TeamMemberProps) => {
   const ref = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
+  // Generate image path based on member name if not provided
+  const memberImagePath = imageSrc || `/team/${name.toLowerCase().replace(/\s+/g, '-')}.jpg`;
+  
+  // Load the texture
+  useEffect(() => {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(
+      memberImagePath,
+      (loadedTexture) => {
+        // Configure texture for better fitting
+        loadedTexture.wrapS = THREE.ClampToEdgeWrapping;
+        loadedTexture.wrapT = THREE.ClampToEdgeWrapping;
+        loadedTexture.minFilter = THREE.LinearFilter;
+        
+        // Center the image and ensure it covers the circle
+        loadedTexture.center.set(0.5, 0.5);
+        loadedTexture.repeat.set(1, 1);
+        
+        setTexture(loadedTexture);
+        setImageLoaded(true);
+      },
+      undefined,
+      (error) => {
+        console.error(`Failed to load image for ${name}:`, error);
+        setImageLoaded(false);
+      }
+    );
+    
+    return () => {
+      if (texture) {
+        texture.dispose();
+      }
+    };
+  }, [memberImagePath, name]);
   
   useFrame((state) => {
     if (ref.current) {
@@ -61,10 +99,18 @@ const TeamMember = ({ position, name, role, color = '#8B5CF6' }: TeamMemberProps
         />
       </mesh>
       
-      {/* Avatar placeholder */}
+      {/* Avatar with image texture */}
       <mesh position={[0, 0.4, 0.11]} scale={[0.9, 0.9, 0.05]}>
         <circleGeometry args={[0.5, 32]} />
-        <meshStandardMaterial color="#222" />
+        {texture && imageLoaded ? (
+          <meshStandardMaterial 
+            map={texture} 
+            transparent={true}
+            side={THREE.DoubleSide}
+          />
+        ) : (
+          <meshStandardMaterial color="#222" />
+        )}
       </mesh>
       
       {/* Name */}
@@ -91,7 +137,7 @@ const TeamMember = ({ position, name, role, color = '#8B5CF6' }: TeamMemberProps
         {role}
       </Text>
       
-      {/* Info popup when hovered */}
+      {/* Info popup when clicked */}
       {clicked && (
         <Html position={[1.5, 0, 0]} center className="pointer-events-none">
           <div className="glass-morphism p-4 w-48 text-white">

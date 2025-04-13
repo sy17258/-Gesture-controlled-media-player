@@ -194,7 +194,7 @@ const VideoDemo = () => {
         
         <Button
           onClick={handleFileSelect}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 border-2 border-dashed border-blue-400 hover:border-blue-300 transition-colors animate-pulse"
           variant="secondary"
         >
           <Upload className="h-4 w-4" />

@@ -13,7 +13,7 @@ interface BackgroundEffectProps {
 
 const BackgroundEffect = ({
   className = '',
-  particleCount = 800,
+  particleCount = 10000,
   particleColor = "#33C3F0",
   showHandGestures = true
 }: BackgroundEffectProps) => {

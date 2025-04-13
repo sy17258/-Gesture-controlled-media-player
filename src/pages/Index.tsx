@@ -9,16 +9,11 @@ import TeamMember from '@/components/canvas/TeamMember';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import VideoDemo from '@/components/ui/VideoDemo';
 import GlitchEffect from '@/components/ui/GlitchEffect';
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { cn } from "@/lib/utils"; // Import cn from utils instead of defining it here
 import ColourfulText from "@/components/ui/colourful-text";
 import { motion } from "motion/react"
 
-
-export function cn(...inputs) {
-  return twMerge(clsx(inputs));
-}
-
+// Remove the cn function export as it's causing HMR issues
 
 const Index = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -98,27 +93,32 @@ const Index = () => {
                   name="Shivam Yadav" 
                   role="Project Lead" 
                   color="#33C3F0" 
+                  imageSrc="/team/Shivam.jpg"
                 />
                 <TeamMember 
                   position={[-4, 0, 0]} 
                   name="Ankit Gola" 
                   role="Backend Developer" 
+                  imageSrc="/team/Ankit.jpg"
                 />
                 <TeamMember 
                   position={[2, -1, 0]} 
                   name="Kushal Dhangar" 
                   role="Frontend Developer" 
+                  imageSrc="/team/Kushal.jpg"
                 />
                 <TeamMember 
                   position={[-2, -1, 0]} 
                   name="Keshav Prajapati" 
                   role="Documentation" 
+                  imageSrc="/team/Keshav.jpg"
                 />
                 
                 <TeamMember 
                   position={[4, 0, 0]} 
                   name="Arvind Arya" 
                   role="Frontend Developer" 
+                  imageSrc="/team/Arvind.jpg"
                 />
               </group>
               <ParticleField count={200} color="#8B5CF6" size={0.03} />
