@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 224 76.3% 48%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.75rem;
+
+    --primary-color: #00f2fe;
+    --secondary-color: #4facfe;
+    --accent-color: #7d5fff;
+    --text-color: #ffffff;
+    --bg-color: #0a0e17;
+    --card-bg: rgba(25, 30, 45, 0.85);
+    --shadow-color: rgba(0, 242, 254, 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border selection:bg-white/10 selection:text-white;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased min-h-screen;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .glass-morphism {
+    @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)];
+  }
+  
+  .neo-blur {
+    @apply backdrop-blur-2xl bg-black/40 border border-white/10;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-br from-white via-white/90 to-white/70 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-primary {
+    @apply bg-gradient-to-br from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent;
+  }
+  
+  .webcam-container {
+    @apply relative overflow-hidden rounded-lg shadow-lg;
+  }
+  
+  .webcam-feed {
+    @apply w-full h-full object-cover;
+  }
+  
+  .webcam-overlay {
+    @apply absolute inset-0 pointer-events-none;
+  }
+  
+  .hand-landmark {
+    @apply fill-tech-blue/30 stroke-tech-blue stroke-2;
+  }
+  
+  .gesture-indicator {
+    @apply absolute top-2 right-2 bg-tech-blue/80 text-white text-xs px-2 py-1 rounded-full;
+  }
+}
+
+/* Add this to your existing CSS */
+.mirror-mode {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+/* Update the existing video CSS rules */
+video {
+  display: block !important;
+  opacity: 1 !important;
+  z-index: 10 !important;
+  object-fit: cover !important;
+}
+
+/* Add a new class for the webcam container */
+.webcam-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background-color: #000;
+  aspect-ratio: 4/3;
+}
+
+#glitch-animation {
+  width: 100%;
+  
+  filter: drop-shadow(0 25px 25px rgba(0, 194, 247, 0.45)) saturate(1.5) contrast(1);
+}
+
+@keyframes glitch-anim {
+  0% { 
+    clip-path: inset(40% 0 61% 0);
+    transform: translate(-10px, 5px);
+  }
+  20% { 
+    clip-path: inset(92% 0 1% 0);
+    transform: translate(10px, -5px);
+  }
+  40% { 
+    clip-path: inset(43% 0 1% 0);
+    transform: translate(-10px, 5px);
+  }
+  60% { 
+    clip-path: inset(25% 0 58% 0);
+    transform: translate(10px, -5px);
+  }
+  80% { 
+    clip-path: inset(54% 0 7% 0);
+    transform: translate(-10px, 5px);
+  }
+  100% { 
+    clip-path: inset(58% 0 43% 0);
+    transform: translate(10px, -5px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.glitch-effect-intense {
+  position: relative;
+  overflow: hidden;
+}
+
+.glitch-effect-intense::before,
+.glitch-effect-intense::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('./assets/glogo.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+}
+
+.glitch-effect-intense::before {
+  left: 2px;
+  background-color: rgba(255, 0, 0, 0.4);
+  animation: glitch-anim 0.2s infinite linear alternate-reverse;
+}
+
+.glitch-effect-intense::after {
+  left: -2px;
+  background-color: rgba(0, 255, 255, 0.4);
+  animation: glitch-anim 0.3s infinite linear alternate;
+}
+
