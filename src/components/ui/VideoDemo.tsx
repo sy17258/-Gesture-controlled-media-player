@@ -118,7 +118,7 @@ const VideoDemo = () => {
   return (
     <div className="glass-morphism rounded-lg p-6 w-full max-w-5xl mx-auto">
       
-      <h1 className="button text-center">
+      <h1 className="button text-center m-2">
           <span>&nbsp;Gesture Controlled Media Player&nbsp;</span>
           <span className="hover-text" aria-hidden="true" data-text="&nbsp;Gesture Controlled Media Player&nbsp;">
             &nbsp;Gesture Controlled Media Player&nbsp;
