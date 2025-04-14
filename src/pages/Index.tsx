@@ -9,9 +9,10 @@ import TeamMember from '@/components/canvas/TeamMember';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import VideoDemo from '@/components/ui/VideoDemo';
 import GlitchEffect from '@/components/ui/GlitchEffect';
-import { cn } from "@/lib/utils"; // Import cn from utils instead of defining it here
+import { cn } from "@/lib/utils";
 import ColourfulText from "@/components/ui/colourful-text";
-import { motion } from "motion/react"
+import { motion } from "framer-motion"; // Fixed import from "motion/react"
+import { motion as m } from "framer-motion";
 
 // Remove the cn function export as it's causing HMR issues
 
@@ -73,8 +74,32 @@ const Index = () => {
         </div>
       </section>
 
-       {/* Team Section */}
-       <section id="team" className="py-20 relative z-10">
+       
+      
+      {/* Demo Section */}
+      <section id="demo" ref={demoRef} className="py-20 relative z-10">
+        <div className="container mx-auto px-4">
+          <AnimatedSection className="text-center ">
+            <h2 className="text-4xl font-bold mb-4 text-gradient"><ColourfulText text="Interactive Demonstration" /> </h2>
+          </AnimatedSection>
+          
+          <AnimatedSection delay={0.2}>
+            <VideoDemo />
+          </AnimatedSection>
+          
+          <AnimatedSection delay={0.3} className="mt-16 text-center">
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              Webcam captures hand movements in real-time, 
+              providing a natural and intuitive way to control media playback.
+            </p>
+          </AnimatedSection>
+        </div>
+      </section>
+
+
+
+      {/* Team Section */}
+      <section id="team" className="py-20 relative z-10">
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-tech-blue to-tech-purple bg-clip-text text-transparent">
@@ -124,26 +149,6 @@ const Index = () => {
               <ParticleField count={200} color="#8B5CF6" size={0.03} />
             </SceneContainer>
           </div>
-        </div>
-      </section>
-      
-      {/* Demo Section */}
-      <section id="demo" ref={demoRef} className="py-20 relative z-10">
-        <div className="container mx-auto px-4">
-          <AnimatedSection className="text-center ">
-            <h2 className="text-4xl font-bold mb-4 text-gradient"><ColourfulText text="Interactive Demonstration" /> </h2>
-          </AnimatedSection>
-          
-          <AnimatedSection delay={0.2}>
-            <VideoDemo />
-          </AnimatedSection>
-          
-          <AnimatedSection delay={0.3} className="mt-16 text-center">
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              Webcam captures hand movements in real-time, 
-              providing a natural and intuitive way to control media playback.
-            </p>
-          </AnimatedSection>
         </div>
       </section>
       
