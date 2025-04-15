@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Volume1, Camera, CameraOff, RefreshCw, Upload } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Volume2, Volume1, Camera, CameraOff, RefreshCw, Upload, Folder } from 'lucide-react';
 import WebcamFeed from './WebcamFeed';
 import { Button } from './button';
 import { toast } from 'sonner';
@@ -14,48 +14,10 @@ const VideoDemo = () => {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [videoFiles, setVideoFiles] = useState<{url: string, name: string}[]>([]);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const folderInputRef = useRef<HTMLInputElement>(null);
   
-  const handleGestureSimulation = (gesture: string) => {
-    setCurrentGesture(gesture);
-    
-    if (!videoRef.current) return;
-    
-    // Simulate the gesture effect
-    switch(gesture) {
-      case 'play':
-        videoRef.current.play();
-        setIsPlaying(true);
-        break;
-      case 'pause':
-        videoRef.current.pause();
-        setIsPlaying(false);
-        break;
-      case 'next':
-        videoRef.current.currentTime += 10; // Skip forward 10 seconds
-        toast.info("Skipped forward 10 seconds");
-        break;
-      case 'previous':
-        videoRef.current.currentTime -= 10; // Skip backward 10 seconds
-        toast.info("Skipped backward 10 seconds");
-        break;
-      case 'volumeUp':
-        videoRef.current.volume = Math.min(1, videoRef.current.volume + 0.1);
-        toast.info(`Volume: ${Math.round(videoRef.current.volume * 100)}%`);
-        break;
-      case 'volumeDown':
-        videoRef.current.volume = Math.max(0, videoRef.current.volume - 0.1);
-        toast.info(`Volume: ${Math.round(videoRef.current.volume * 100)}%`);
-        break;
-      default:
-        break;
-    }
-    
-    // Reset gesture display after delay
-    setTimeout(() => {
-      setCurrentGesture(null);
-    }, 2000);
-  };
-
   const toggleCamera = () => {
     if (!isCameraActive) {
       // Check if browser supports getUserMedia
@@ -115,6 +77,106 @@ const VideoDemo = () => {
     };
   }, [selectedVideo]);
   
+  // Add folder selection handler
+  const handleFolderSelect = () => {
+    if (folderInputRef.current) {
+      folderInputRef.current.click();
+    }
+  };
+
+  const handleFolderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const videoFilesList: {url: string, name: string}[] = [];
+    
+    Array.from(files).forEach(file => {
+      if (file.type.startsWith('video/')) {
+        const videoUrl = URL.createObjectURL(file);
+        videoFilesList.push({url: videoUrl, name: file.name});
+      }
+    });
+
+    if (videoFilesList.length === 0) {
+      toast.error('No valid video files found in the selected folder');
+      return;
+    }
+
+    // Clean up previous object URLs
+    if (selectedVideo) {
+      URL.revokeObjectURL(selectedVideo);
+    }
+
+    setVideoFiles(videoFilesList);
+    setSelectedVideo(videoFilesList[0].url);
+    setCurrentVideoIndex(0);
+    toast.success(`Loaded ${videoFilesList.length} videos from folder`);
+
+    // Auto-play the first video
+    if (videoRef.current) {
+      videoRef.current.onloadedmetadata = () => {
+        setIsPlaying(true);
+        videoRef.current?.play();
+      };
+    }
+  };
+
+  // Update handleGestureSimulation to handle multiple videos
+  const handleGestureSimulation = (gesture: string) => {
+    setCurrentGesture(gesture);
+    
+    if (!videoRef.current) return;
+    
+    // Simulate the gesture effect
+    switch(gesture) {
+      case 'play':
+        videoRef.current.play();
+        setIsPlaying(true);
+        break;
+      case 'pause':
+        videoRef.current.pause();
+        setIsPlaying(false);
+        break;
+      case 'next':
+        if (videoFiles.length > 1) {
+          const nextIndex = (currentVideoIndex + 1) % videoFiles.length;
+          setCurrentVideoIndex(nextIndex);
+          setSelectedVideo(videoFiles[nextIndex].url);
+          toast.info(`Playing: ${videoFiles[nextIndex].name}`);
+        } else {
+          videoRef.current.currentTime += 10; // Skip forward 10 seconds
+          toast.info("Skipped forward 10 seconds");
+        }
+        break;
+      case 'previous':
+        if (videoFiles.length > 1) {
+          const prevIndex = (currentVideoIndex - 1 + videoFiles.length) % videoFiles.length;
+          setCurrentVideoIndex(prevIndex);
+          setSelectedVideo(videoFiles[prevIndex].url);
+          toast.info(`Playing: ${videoFiles[prevIndex].name}`);
+        } else {
+          videoRef.current.currentTime -= 10; // Skip backward 10 seconds
+          toast.info("Skipped backward 10 seconds");
+        }
+        break;
+      case 'volumeUp':
+        videoRef.current.volume = Math.min(1, videoRef.current.volume + 0.1);
+        toast.info(`Volume: ${Math.round(videoRef.current.volume * 100)}%`);
+        break;
+      case 'volumeDown':
+        videoRef.current.volume = Math.max(0, videoRef.current.volume - 0.1);
+        toast.info(`Volume: ${Math.round(videoRef.current.volume * 100)}%`);
+        break;
+      default:
+        break;
+    }
+    
+    // Reset gesture display after delay
+    setTimeout(() => {
+      setCurrentGesture(null);
+    }, 2000);
+  };
+
   return (
     <div className="glass-morphism rounded-lg p-6 w-full max-w-5xl mx-auto">
       
@@ -192,22 +254,66 @@ const VideoDemo = () => {
           )}
         </Button>
         
-        <Button
-          onClick={handleFileSelect}
-          className="flex items-center gap-2 border-2 border-dashed border-blue-400 hover:border-blue-300 transition-colors animate-pulse"
-          variant="secondary"
-        >
-          <Upload className="h-4 w-4" />
-          <span>Select Video</span>
-        </Button>
-        <input 
-          type="file" 
-          ref={fileInputRef} 
-          accept="video/*" 
-          className="hidden" 
-          onChange={handleFileChange}
-        />
+        
+        <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                onClick={handleFolderSelect}
+                className="flex items-center gap-2 border-2 border-dashed border-[#00f2fe] hover:border-[#4facfe] transition-all duration-300 relative overflow-hidden group"
+                variant="secondary"
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-[#00f2fe]/20 to-[#4facfe]/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                  animate={{
+                    background: [
+                      "linear-gradient(90deg, rgba(0,242,254,0.1) 0%, rgba(79,172,254,0.1) 100%)",
+                      "linear-gradient(90deg, rgba(79,172,254,0.1) 0%, rgba(0,242,254,0.1) 100%)",
+                      "linear-gradient(90deg, rgba(0,242,254,0.1) 0%, rgba(79,172,254,0.1) 100%)"
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                {/* Blinking effect overlay */}
+                <motion.div
+                  className="absolute inset-0 bg-[skyblue]/20"
+                  animate={{ opacity: [0, 1.3, 0] }}
+                  transition={{ 
+                    duration: 1.8, 
+                    repeat: Infinity, 
+                    ease: "easeInOut" 
+                  }}
+                />
+                <Folder className="h-4 w-4 text-[#00f2fe] group-hover:animate-pulse" />
+                <span className="relative z-10">Select Folder</span>
+              </Button>
+            </motion.div>
+            <input 
+              type="file" 
+              multiple
+              ref={folderInputRef}
+              accept="video/*"
+              className="hidden"
+              onChange={handleFolderChange}
+              {...{
+                webkitdirectory: "true",
+                directory: "true"
+              } as any}
+            />
       </div>
+      
+      {/* Video count indicator */}
+      {videoFiles.length > 0 && (
+        <div className="flex justify-center mb-4">
+          <div className="glass-morphism px-4 py-2 rounded-full">
+            <p className="text-white text-sm">
+              {videoFiles.length} {videoFiles.length === 1 ? 'video' : 'videos'} upload
+              {videoFiles.length > 1 && ` (Playing ${currentVideoIndex + 1} of ${videoFiles.length})`}
+            </p>
+          </div>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left side: Video Player */}

@@ -4,7 +4,6 @@ function GlitchEffect() {
   const [isGlitching, setIsGlitching] = useState(false);
   const audioRef = useRef(null);
   
-
   const playGlitchSound = () => {
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
@@ -17,7 +16,6 @@ function GlitchEffect() {
         .catch(e => console.log('Audio play error:', e));
     }
   };
-
 
   useEffect(() => {
     const handleInteraction = () => {
@@ -39,40 +37,56 @@ function GlitchEffect() {
     };
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(playGlitchSound, 300);
-    return () => clearTimeout(timer);
-  }, []);
+  // Don't auto-play on load - this causes the NotAllowedError
+  // useEffect(() => {
+  //   const timer = setTimeout(playGlitchSound, 300);
+  //   return () => clearTimeout(timer);
+  // }, []);
+
+  // Add a check to see if the image exists
+  const [imageLoaded, setImageLoaded] = useState(true);
+  const imagePath = import.meta.env.BASE_URL + 'assets/glogo.png';
+  const audioPath = import.meta.env.BASE_URL + 'assets/glitch-sound.mp3';
 
   return (
     <>
       <audio 
         ref={audioRef} 
-        src="/src/assets/glitch-sound.mp3"
+        src={audioPath}
         preload="auto"
         playsInline
       />
       
-      <img
-        id="glitch-animation"
-        className="relative"
-        src="/src/assets/glogo.png"
-        alt="Glitch Animation"
-        style={{
-          position: 'relative',
-          animation: isGlitching 
-            ? 'glitch-anim 0.2s steps(2) infinite, shake 0.5s cubic-bezier(.36,.07,.19,.97) both' 
-            : 'glitch 1s infinite, blink 3s ease-in-out 2',
-          filter: isGlitching 
-            ? 'hue-rotate(90deg) contrast(1.5) brightness(1.2) saturate(1.5)' 
-            : 'drop-shadow(2px 2px 0 rgba(0, 255, 255, 0.7))',
-          transform: isGlitching ? 'scale(1.05)' : 'scale(1)',
-          transition: 'filter 0.1s ease, transform 0.1s ease'
-        }}
-      />
+      {imageLoaded && (
+        <img
+          id="glitch-animation"
+          className="relative z-10"
+          src={imagePath}
+          alt="Glitch Animation"
+          onError={() => {
+            console.error("Failed to load glogo.png");
+            setImageLoaded(false);
+          }}
+          style={{
+            position: 'relative',
+            animation: isGlitching 
+              ? 'glitch-anim 0.2s steps(2) infinite, shake 0.5s cubic-bezier(.36,.07,.19,.97) both' 
+              : 'glitch 1s infinite, blink 3s ease-in-out 2',
+            filter: isGlitching 
+              ? 'hue-rotate(90deg) contrast(1.5) brightness(1.2) saturate(1.5)' 
+              : 'drop-shadow(2px 2px 0 rgba(0, 255, 255, 0.7))',
+            transform: isGlitching ? 'scale(1.05)' : 'scale(1)',
+            transition: 'filter 0.1s ease, transform 0.1s ease',
+            pointerEvents: 'none' // Ensure it doesn't block interactions
+          }}
+        />
+      )}
 
-
-
+      {!imageLoaded && (
+        <div className="relative z-10 text-center p-4">
+          <p className="text-cyan-400">Logo image not found</p>
+        </div>
+      )}
     </>
   );
 }
