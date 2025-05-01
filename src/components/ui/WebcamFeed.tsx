@@ -182,38 +182,33 @@ const WebcamFeed = ({ onGestureDetected, isActive = false }: WebcamFeedProps) =>
                   case 'Thumbs_Down':
                     mappedGesture = 'volumeDown';
                     break;
-                  case 'Victory':
-                  case 'Peace':
+                  case 'point_right':
+                  case 'point_right_hand':
+                  case 'swipe_right':  // Add swipe_right gesture
                     mappedGesture = 'next';
                     break;
-                  case 'ILoveYou':
+                  case 'point_left':
+                  case 'point_left_hand':
+                  case 'swipe_left':   // Add swipe_left gesture
                     mappedGesture = 'previous';
                     break;
+                  // Fix for point_up gesture - add additional case and improve handling
                   case 'Pointing_Up':
+                  case 'point_up':
+                  case 'Point_Up':
                     mappedGesture = 'fullscreen';
-                    setTimeout(() => {
-                      console.log("Toggling fullscreen mode");
-                      toggleFullscreen();
-                    }, 100);
+                    // Call toggleFullscreen directly without setTimeout
+                    toggleFullscreen();
                     break;
-                  case 'Call_Me':
+                  // Fix for rock gesture - add additional case and improve handling
+                  case 'rock_gesture':
                   case 'Rock':
+                  case 'rock':
                     mappedGesture = 'selectFiles';
-                    setTimeout(() => {
-                      console.log("Opening file selection dialog");
-                      const fileInput = document.createElement('input');
-                      fileInput.type = 'file';
-                      fileInput.multiple = true;
-                      fileInput.accept = 'video/*,audio/*,image/*';
-                      fileInput.click();
-                      fileInput.onchange = (e) => {
-                        const files = (e.target as HTMLInputElement).files;
-                        if (files && files.length > 0) {
-                          console.log('Files selected:', files);
-                          toast.success(`Selected ${files.length} files`);
-                        }
-                      };
-                    }, 100);
+                    // If onGestureDetected is provided, use it to trigger file selection in parent component
+                    if (onGestureDetected) {
+                      onGestureDetected('selectFiles');
+                    }
                     break;
                 }
 

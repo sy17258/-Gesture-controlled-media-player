@@ -11,8 +11,10 @@ import VideoDemo from '@/components/ui/VideoDemo';
 import GlitchEffect from '@/components/ui/GlitchEffect';
 import { cn } from "@/lib/utils";
 import ColourfulText from "@/components/ui/colourful-text";
-import { motion } from "framer-motion"; // Fixed import from "motion/react"
-import { motion as m } from "framer-motion";
+import { motion } from "framer-motion";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Github, ExternalLink } from "lucide-react";
 
 // Remove the cn function export as it's causing HMR issues
 
@@ -21,13 +23,21 @@ const Index = () => {
   const demoRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
+    // Throttle scroll event for better performance
+    let lastScrollTime = 0;
+    const throttleTime = 10; // ms
+    
     const handleScroll = () => {
+      const now = Date.now();
+      if (now - lastScrollTime < throttleTime) return;
+      
+      lastScrollTime = now;
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = window.scrollY / totalHeight;
       setScrollProgress(progress);
     };
     
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
@@ -40,7 +50,11 @@ const Index = () => {
       <NavBar />
       
       {/* Progress Bar */}
-      <div className="fixed top-0 left-0 h-1 bg-tech-purple z-50" style={{ width: `${scrollProgress * 100}%` }} />
+      <Progress 
+        className="fixed top-0 left-0 h-1 z-50 rounded-none" 
+        value={scrollProgress * 100} 
+        style={{ backgroundColor: 'transparent' }}
+      />
       
       {/* Hero Section */}
       <section id="hero" className="h-screen pt-20 relative overflow-hidden">
@@ -154,7 +168,7 @@ const Index = () => {
       
      
       
-      {/* Contact Section
+      {/* Contact Section - Commented out
       <section id="contact" className="py-20 relative z-10">
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-10">
@@ -205,7 +219,7 @@ const Index = () => {
           </AnimatedSection>
         </div>
       </section>
-       */}
+      */}
 
 
       {/* Footer */}

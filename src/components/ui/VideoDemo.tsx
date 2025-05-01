@@ -143,6 +143,14 @@ const VideoDemo = () => {
           setCurrentVideoIndex(nextIndex);
           setSelectedVideo(videoFiles[nextIndex].url);
           toast.info(`Playing: ${videoFiles[nextIndex].name}`);
+          
+          // Ensure the video plays after changing
+          setTimeout(() => {
+            if (videoRef.current) {
+              videoRef.current.play();
+              setIsPlaying(true);
+            }
+          }, 100);
         } else {
           videoRef.current.currentTime += 10; // Skip forward 10 seconds
           toast.info("Skipped forward 10 seconds");
@@ -167,6 +175,15 @@ const VideoDemo = () => {
         videoRef.current.volume = Math.max(0, videoRef.current.volume - 0.1);
         toast.info(`Volume: ${Math.round(videoRef.current.volume * 100)}%`);
         break;
+      // Add handler for fullscreen gesture
+      case 'fullscreen':
+        toast.info("Toggling fullscreen mode");
+        break;
+      // Add handler for selectFiles gesture
+      case 'selectFiles':
+        toast.info("Opening file selection");
+        handleFileSelect();
+        break;
       default:
         break;
     }
@@ -181,8 +198,8 @@ const VideoDemo = () => {
     <div className="glass-morphism rounded-lg p-6 w-full max-w-5xl mx-auto">
       
       <h1 className="button text-center m-2">
-          <span>&nbsp;Gesture Controlled Media Player&nbsp;</span>
-          <span className="hover-text" aria-hidden="true" data-text="&nbsp;Gesture Controlled Media Player&nbsp;">
+          <span className="mobile-title">&nbsp;Gesture Controlled Media Player&nbsp;</span>
+          <span className="hover-text mobile-title-hover" aria-hidden="true" data-text="&nbsp;Gesture Controlled Media Player&nbsp;">
             &nbsp;Gesture Controlled Media Player&nbsp;
           </span>
         </h1>
@@ -213,6 +230,31 @@ const VideoDemo = () => {
             color: transparent;
             -webkit-text-stroke: 1px var(--text-stroke-color);
           }
+          
+          /* Mobile responsive title */
+          .mobile-title, .mobile-title-hover {
+            display: inline-block;
+            white-space: normal;
+            word-wrap: break-word;
+          }
+          
+          /* Responsive font sizes */
+          @media (max-width: 768px) {
+            .button {
+              --fs-size: 1.5em;
+              letter-spacing: 2px;
+              -webkit-text-stroke: 0.8px var(--text-stroke-color);
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .button {
+              --fs-size: 1.2em;
+              letter-spacing: 1px;
+              -webkit-text-stroke: 0.6px var(--text-stroke-color);
+            }
+          }
+          
           /* this is the text, when you hover on button */
           .hover-text {
             position: absolute;
@@ -387,6 +429,7 @@ const VideoDemo = () => {
         >
           <SkipBack className="h-8 w-8 text-white mb-1" />
           <span className="text-white text-xs">Previous</span>
+          <span className="text-gray-400 text-xs mt-1">(Swipe Left)</span>
         </button>
         
         <button 
@@ -412,6 +455,7 @@ const VideoDemo = () => {
         >
           <SkipForward className="h-8 w-8 text-white mb-1" />
           <span className="text-white text-xs">Next</span>
+          <span className="text-gray-400 text-xs mt-1">(Swipe Right)</span>
         </button>
         
         <button 
