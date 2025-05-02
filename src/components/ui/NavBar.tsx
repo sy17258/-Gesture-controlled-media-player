@@ -22,7 +22,7 @@ const NavBar = () => {
     { name: 'Home', href: '#hero' },
     { name: 'Demo', href: '#demo' },
     { name: 'Team', href: '#team' },
-    { name: 'Contact', href: '#contact' },
+    
   ];
   
   return (
@@ -32,7 +32,7 @@ const NavBar = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <a href="#" className="text-white font-bold text-xl">
+        <a href="/" className="text-white font-bold text-xl">
           <span className="text-tech-blue">Gesture</span>Media<span className="text-tech-purple">Player</span>
         </a>
         
@@ -40,7 +40,7 @@ const NavBar = () => {
         <nav className="hidden md:flex space-x-6">
           
           <a 
-            href="https://github.com" 
+            href="https://github.com/sy17258" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-white transition-colors"

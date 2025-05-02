@@ -1,14 +1,13 @@
-
-import { useEffect, useState, useRef } from 'react';
-import NavBar from '@/components/ui/NavBar';
-import SceneContainer from '@/components/canvas/SceneContainer';
-import HandGesture from '@/components/canvas/HandGesture';
-import MediaPlayer from '@/components/canvas/MediaPlayer';
-import ParticleField from '@/components/canvas/ParticleField';
-import TeamMember from '@/components/canvas/TeamMember';
-import AnimatedSection from '@/components/ui/AnimatedSection';
-import VideoDemo from '@/components/ui/VideoDemo';
-import GlitchEffect from '@/components/ui/GlitchEffect';
+import { useEffect, useState, useRef } from "react";
+import NavBar from "@/components/ui/NavBar";
+import SceneContainer from "@/components/canvas/SceneContainer";
+import HandGesture from "@/components/canvas/HandGesture";
+import MediaPlayer from "@/components/canvas/MediaPlayer";
+import ParticleField from "@/components/canvas/ParticleField";
+import TeamMember from "@/components/canvas/TeamMember";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import VideoDemo from "@/components/ui/VideoDemo";
+import GlitchEffect from "@/components/ui/GlitchEffect";
 import { cn } from "@/lib/utils";
 import ColourfulText from "@/components/ui/colourful-text";
 import { motion } from "framer-motion";
@@ -21,64 +20,70 @@ import { Github, ExternalLink } from "lucide-react";
 const Index = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const demoRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     // Throttle scroll event for better performance
     let lastScrollTime = 0;
     const throttleTime = 10; // ms
-    
+
     const handleScroll = () => {
       const now = Date.now();
       if (now - lastScrollTime < throttleTime) return;
-      
+
       lastScrollTime = now;
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const totalHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const progress = window.scrollY / totalHeight;
       setScrollProgress(progress);
     };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   const scrollToDemo = () => {
-    demoRef.current?.scrollIntoView({ behavior: 'smooth' });
+    demoRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  
+
   return (
     <div className="min-h-screen text-white">
       <NavBar />
-      
+
       {/* Progress Bar */}
-      <Progress 
-        className="fixed top-0 left-0 h-1 z-50 rounded-none" 
-        value={scrollProgress * 100} 
-        style={{ backgroundColor: 'transparent' }}
+      <Progress
+        className="fixed top-0 left-0 h-1 z-50 rounded-none"
+        value={scrollProgress * 100}
+        style={{ backgroundColor: "transparent" }}
       />
-      
+
       {/* Hero Section */}
-      <section id="hero" className="h-screen pt-20 relative overflow-hidden">
-        {/* <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center relative z-10">
+      <section id="hero" className="h-full pt-20 relative overflow-hidden">
+        <GlitchEffect />
+
+        <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            
-            
-            <div className="mt-10 flex flex-wrap gap-4 justify-center">
-              <Button onClick={scrollToDemo} className="bg-tech-blue hover:bg-tech-blue/80 text-white">
-                 Live Demo
+            <div className="mb-10 flex flex-wrap gap-4 justify-center">
+              <Button
+                onClick={scrollToDemo}
+                className="bg-tech-blue hover:bg-tech-blue/80 text-white"
+              >
+                Live Demonstration
               </Button>
-              <Button variant="outline" className="border-tech-purple text-tech-purple hover:bg-tech-purple/10">
+              <Button
+                variant="outline"
+                className="border-tech-purple text-tech-purple hover:bg-tech-purple/10"
+                onClick={() => window.open("https://github.com/sy17258/-Gesture-controlled-media-player", "_blank")}
+              >
                 <Github className="mr-2 h-4 w-4" /> Source Code
               </Button>
             </div>
           </motion.div>
-        </div> */}
-
-        <GlitchEffect />
+        </div>
 
         {/* 3D Scene for Hero */}
         <div className="absolute inset-0 z-0">
@@ -88,34 +93,32 @@ const Index = () => {
         </div>
       </section>
 
-       
-      
       {/* Demo Section */}
-      <section id="demo" ref={demoRef} className="py-20 relative z-10">
-        <div className="container mx-auto px-4">
+      <section id="demo" ref={demoRef} className="py-5 relative z-10">
+        <div className="container mx-auto ">
           <AnimatedSection className="text-center ">
-            <h2 className="text-4xl font-bold mb-4 text-gradient"><ColourfulText text="Interactive Demonstration" /> </h2>
+            <h2 className="text-4xl font-bold mb-2 text-gradient">
+              <ColourfulText text="Interactive Demonstration" />{" "}
+            </h2>
           </AnimatedSection>
-          
+
           <AnimatedSection delay={0.2}>
             <VideoDemo />
           </AnimatedSection>
-          
-          <AnimatedSection delay={0.3} className="mt-16 text-center">
+
+          <AnimatedSection delay={0.3} className="mt-5 text-center">
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              Webcam captures hand movements in real-time, 
-              providing a natural and intuitive way to control media playback.
+              Webcam captures hand movements in real-time, providing a natural
+              and intuitive way to control media playback.
             </p>
           </AnimatedSection>
         </div>
       </section>
 
-
-
       {/* Team Section */}
-      <section id="team" className="py-20 relative z-10">
+      <section id="team" className="py-5 relative z-10">
         <div className="container mx-auto px-4">
-          <AnimatedSection className="text-center mb-16">
+          <AnimatedSection className="text-center mb-5">
             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-tech-blue to-tech-purple bg-clip-text text-transparent">
               Meet The Team
             </h2>
@@ -123,40 +126,40 @@ const Index = () => {
               The talented individuals behind this innovative project.
             </p>
           </AnimatedSection>
-          
+
           <div className="h-[500px] md:h-[900px] relative">
             <SceneContainer cameraPosition={[0, 0, 10]}>
               <group position={[0, 0, 0]}>
-                <TeamMember 
-                  position={[0, 1, 0]} 
-                  name="Shivam Yadav" 
-                  role="Project Lead" 
-                  color="#33C3F0" 
+                <TeamMember
+                  position={[0, 1, 0]}
+                  name="Shivam Yadav"
+                  role="Project Lead"
+                  color="#33C3F0"
                   imageSrc="/team/Shivam.jpg"
                 />
-                <TeamMember 
-                  position={[-4, 0, 0]} 
-                  name="Ankit Gola" 
-                  role="Backend Developer" 
+                <TeamMember
+                  position={[-4, 0, 0]}
+                  name="Ankit Gola"
+                  role="Backend Developer"
                   imageSrc="/team/Ankit.jpg"
                 />
-                <TeamMember 
-                  position={[2, -1, 0]} 
-                  name="Kushal Dhangar" 
-                  role="Frontend Developer" 
+                <TeamMember
+                  position={[2, -1, 0]}
+                  name="Kushal Dhangar"
+                  role="Frontend Developer"
                   imageSrc="/team/Kushal.jpg"
                 />
-                <TeamMember 
-                  position={[-2, -1, 0]} 
-                  name="Keshav Prajapati" 
-                  role="Documentation" 
+                <TeamMember
+                  position={[-2, -1, 0]}
+                  name="Keshav Prajapati"
+                  role="Documentation"
                   imageSrc="/team/Keshav.jpg"
                 />
-                
-                <TeamMember 
-                  position={[4, 0, 0]} 
-                  name="Arvind Arya" 
-                  role="Frontend Developer" 
+
+                <TeamMember
+                  position={[4, 0, 0]}
+                  name="Arvind Arya"
+                  role="Frontend Developer"
                   imageSrc="/team/Arvind.jpg"
                 />
               </group>
@@ -165,9 +168,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
-     
-      
+
       {/* Contact Section - Commented out
       <section id="contact" className="py-20 relative z-10">
         <div className="container mx-auto px-4">
@@ -221,12 +222,12 @@ const Index = () => {
       </section>
       */}
 
-
       {/* Footer */}
       <footer className="py-8 glass-morphism relative z-10">
         <div className="container mx-auto px-4 text-center">
           <p className="text-gray-400">
-            &copy; {new Date().getFullYear()} Gesture Controlled Media Player | Final Year Project
+            &copy; {new Date().getFullYear()} Gesture Controlled Media Player |
+            Final Year Project
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Built with React, Three.js, and ❤️
