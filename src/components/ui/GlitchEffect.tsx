@@ -45,7 +45,7 @@ function GlitchEffect() {
 
   // Add a check to see if the image exists
   const [imageLoaded, setImageLoaded] = useState(true);
-  const imagePath = import.meta.env.BASE_URL + 'assets/glogo.png';
+  const imagePath = 'https://cdn.pixabay.com/photo/2025/05/02/03/08/03-08-47-286_1280.png';
   const audioPath = import.meta.env.BASE_URL + 'assets/glitch-sound.mp3';
 
   return (
